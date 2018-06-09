@@ -1,7 +1,9 @@
 <html>
 <head>
     <title>Bughole</title>
-    <link rel="stylesheet" href="/bootstrap.css" type="text/css" media="all">
+
+    <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/static/css/toastr.min.css" type="text/css" media="all">
     <style type="text/css">
         .lineno {
             margin-right: 10px;
@@ -64,7 +66,7 @@
     </span>
 </div>
 
-<div class="panel panel-default" style="width: 52%;">
+<div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
             <strong>Code Block</strong>&nbsp;&nbsp;
@@ -81,7 +83,7 @@
     <div class="panel-body J_codeBody"></div>
 </div>
 
-<div class="panel panel-default" style="width: 44%;">
+<div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
             <strong>Context</strong>
@@ -93,12 +95,11 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
-            <strong>断点</strong>&nbsp;&nbsp;
-            <a href="javascript:;" class="btn btn-xs btn-default J_clearBpt">清空</a>
-            <a href="javascript:;" class="btn btn-xs btn-success J_addBpt">Add</a>
+            <strong>BreakPoints</strong>&nbsp;&nbsp;
+            <a href="javascript:;" class="btn btn-xs btn-default J_clearBpt">ClearAll</a>
+            <a href="javascript:;" class="btn btn-xs btn-success J_addBpt">AddNew</a>
             | BasePath：
-            <input type="text" name="basePath" value="/data/webroot/www/beibei/"
-                   style="width: 50%;">
+            <input type="text" name="basePath" placeholder="project root path" value="" style="width: 42%;">
         </div>
     </div>
     <div class="panel-body J_bptBody"></div>
@@ -119,10 +120,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
-                <h4 class="modal-title">断点信息</h4>
+                <h4 class="modal-title">Add New BreakPoint</h4>
             </div>
             <div class="modal-body">
-                <div class="input-group">BasePath如果存在，则支持填写相对路径；当然绝对路径也支持</div>
+                <div class="input-group">
+                    If BasePath exists, file path can be relative path.
+                    While absolute file path will always be ok.
+                </div>
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon">文件路径：</span>
@@ -152,6 +156,11 @@
     window.pageData = <?php echo json_encode($page_data)?>
 </script>
 
+<script type="text/javascript" src="/static/js/jquery-min-v2.1.1.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-treeview-v1.2.0.js"></script>
+<script type="text/javascript" src="/static/js/toastr.min.js"></script>
+<script type="text/javascript" src="/static/js/bughhole_ui.js"></script>
 
 
 

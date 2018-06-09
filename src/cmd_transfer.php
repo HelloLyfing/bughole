@@ -6,7 +6,13 @@ class CmdTransfer {
 
     private $curl;
 
+    private $debug_mode = 1;
+
     public function __construct() {
+        if ($this->debug_mode) {
+            ini_set('display_errors', 1);
+        }
+
         $this->curl = curl_init();
         curl_setopt_array($this->curl, array(
             CURLOPT_RETURNTRANSFER => TRUE,
@@ -20,7 +26,12 @@ class CmdTransfer {
     }
 
     public function send_cmd() {
-        $cmd_info = json_decode($_POST('cmd_info'));
+        $cmd_info = json_decode(@$_POST['cmd_info']);
+
+        if (!$cmd_info) {
+            $this->output(FALSE, 'invalid data');
+        }
+
         $cmd_obj = (object) array(
             'type' => $cmd_info->type,
             'content' => $cmd_info->content,
@@ -32,19 +43,23 @@ class CmdTransfer {
 
         $response = curl_exec($this->curl);
         if (FALSE === $response) {
-            $response = json_encode(['success' => FALSE, 'message' => 'call agent api failed, agent not running ?']);
+            $response = json_encode(['success' => FALSE, 'message' => 'Call agent api failed, agent not running ?']);
         }
         $response = json_decode($response);
 
+        $this->output($response->success, $response->message, isset($response->data) ? $response->data : NULL);
+    }
+
+    private function output($success, $msg, $data = NULL) {
         $output_result = [
-            'success' => $response->success,
-            'message' => $response->message,
-            'data' => isset($response->data) ? $response->data : NULL
+            'success' => $success,
+            'message' => $msg,
+            'data' => $data,
         ];
         header('Content-type: application/json; charset=utf-8');
         echo json_encode($output_result);
+        exit;
     }
-
 }
 
 (new CmdTransfer())->send_cmd();
