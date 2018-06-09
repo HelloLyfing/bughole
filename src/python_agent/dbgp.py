@@ -1,6 +1,5 @@
 # coding:UTF-8
 
-import os
 import sys
 import thread
 import errno
@@ -12,7 +11,6 @@ import socket
 import base64
 import time
 import json
-import log
 
 """ Response objects for the DBGP module."""
 
@@ -282,7 +280,7 @@ class DbgpApi:
             send += ' ' + args
 
         newLineStr = '---------------'
-        log.Log(newLineStr + '\nCommand: ' + send, log.Logger.DEBUG)
+        Logger.debug(newLineStr + '\nCommand: ' + send)
 
         try:
             self.conn.send_msg(send)
@@ -294,10 +292,10 @@ class DbgpApi:
             raise
         except Exception as e:
             result.message = 'socket send_cmd() failed:' + str(e)
-            print result.message
+            Logger.info(result.message)
             return result
 
-        log.Log('\nResponse: ' + msg, log.Logger.DEBUG)
+        Logger.debug('\nResponse: ' + msg)
 
         try:
             respObj = responseClass(msg, cmd, args, self)
@@ -461,7 +459,7 @@ class DbgpApi:
         """Remove a breakpoint by ID.
 
         The ID is that returned in the response from breakpoint_set."""
-        return self.send_cmd('breakpoint_remove','-d %i' % id,Response)
+        return self.send_cmd('breakpoint_remove', '-d %i' % id, Response)
 
 """Connection module for managing a socket connection
 between this client and the debugger."""
@@ -502,7 +500,7 @@ class Connection:
     def open(self, dbgpApi):
         """Listen for a connection from the debugger. Listening for the actual
         connection is handled by self.listen()."""
-        print 'going to assign a socket...'
+        Logger.info('going to assign a socket...')
 
         serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
@@ -514,17 +512,16 @@ class Connection:
 
             # 异步等待Xdebug Conn
             thread.start_new_thread(self.waitAcceptXdebugConn, (serv, dbgpApi))
-            print 'waiting conn from xdebug in new thread!'
+            Logger.info('waiting conn from xdebug in new thread!')
         except Exception as e:
-            print str(e)
+            Logger.error(str(e))
             serv.close()
             self.close()
-
 
     def waitAcceptXdebugConn(self, serv, dbgpApi):
         (self.sock, self.address) = self.listen(serv, self.listenTimeout)
         self.sock.settimeout(None)
-        print "accept xdebug conn success!"
+        Logger.info('accept xdebug conn success!')
 
         serv.close()
         self.isconned = 1
@@ -554,7 +551,7 @@ class Connection:
     def close(self):
         """Close the connection."""
         if self.sock != None:
-            log.Log("Closing the socket", log.Logger.DEBUG)
+            Logger.info("Closing the socket")
             self.sock.close()
             self.sock = None
         self.isconned = 0
@@ -807,3 +804,17 @@ class ResponseError(Exception):
 class TraceError(Exception):
     """Raised when trace is out of domain."""
     pass
+
+class Logger:
+
+    @staticmethod
+    def debug(msg):
+        print(msg)
+
+    @staticmethod
+    def info(msg):
+        print(msg)
+
+    @staticmethod
+    def error(msg):
+        print(msg)

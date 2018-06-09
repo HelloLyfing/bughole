@@ -67,8 +67,8 @@
 <div class="panel panel-default" style="width: 52%;">
     <div class="panel-heading">
         <div class="panel-title">
-            <strong>代码区</strong>&nbsp;&nbsp;
-            <a href="javascript:;" class="btn btn-xs btn-success J_init">建立连接</a>&nbsp;&nbsp;
+            <strong>Code Block</strong>&nbsp;&nbsp;
+            <a href="javascript:;" class="btn btn-xs btn-success J_init">StartListen</a>&nbsp;&nbsp;
             <a href="javascript:;" class="btn btn-xs btn-danger J_stop">Stop</a>&nbsp;
             <a href="javascript:;" class="btn btn-xs btn-success J_run">Run</a>&nbsp;
             <a href="javascript:;" class="btn btn-xs btn-info J_stepOver">StepOver</a>&nbsp;
@@ -77,8 +77,8 @@
             <a href="javascript:;" class="btn btn-xs btn-default J_runToLine">RunToLine</a>
         </div>
     </div>
-    <div class="panel-body J_codeBody">
-    </div>
+
+    <div class="panel-body J_codeBody"></div>
 </div>
 
 <div class="panel panel-default" style="width: 44%;">

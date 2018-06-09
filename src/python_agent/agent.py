@@ -1,11 +1,12 @@
 # coding:UTF-8
+
 import SimpleHTTPServer
 import SocketServer
 import json
 import base64
 import dbgp
-import log
 import breakpoint as bpt
+from dbgp import Logger
 
 class Task:
     md5 = None
@@ -63,7 +64,7 @@ class TaskHandler:
                 try:
                     self.dbgpApi = dbgp.DbgpApi()
                 except Exception as e:
-                    log.Log('new dbgp api excp:' + str(e))
+                    Logger.error('new dbgp api excp:' + str(e))
                     self.dbgpApi = None
 
                 if self.dbgpApi is None:
@@ -292,13 +293,13 @@ class HttpServer(object):
         port = 21734
         httpd = SocketServer.TCPServer((host, port), reqHandler)
 
-        print 'serving at %s:%s' % (host, port)
+        Logger.info('serving at %s:%s' % (host, port))
         try:
             httpd.serve_forever()
         except Exception as e:
             pass
         finally:
-            print 'server going to shutdown...'
+            Logger.info('server going to shutdown...')
             httpd.server_close()
             httpd.shutdown()
 
@@ -330,7 +331,7 @@ class HttpReqHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(result.toJsonString())
         except Exception as e:
-            print 'do_POST exception:' + str(e)
+            'do_POST exception:' + str(e)
 
 
 # ---------- 执行区域 ----------
