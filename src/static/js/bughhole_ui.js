@@ -1,28 +1,3 @@
-function showLoading() {
-    $('img[name=loading]').removeClass('hide');
-}
-
-function hideLoading() {
-    $('img[name=loading]').addClass('hide');
-}
-
-function danderMsg(msg) {
-    if (typeof(type) === 'undefined') {
-        // support: default, info, success, warning
-        type = 'default';
-    }
-    // http://yjseo29.github.io/notify
-    toastr.warning(msg);
-}
-
-function infoMsg(msg) {
-    toastr.info(msg);
-}
-
-function gmtNow() {
-    return Date.now() / 1000;
-}
-
 var Base64 = {_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9+/=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/rn/g,"n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}
 
 var Utils = {
@@ -51,7 +26,29 @@ var Utils = {
         return '';
     },
 
-    base64: Base64
+    base64: Base64,
+
+    showLoading: function () {
+        $('img[name=loading]').removeClass('hide');
+    },
+
+    hideLoading: function () {
+        $('img[name=loading]').addClass('hide');
+    },
+
+    danderMsg: function (msg) {
+        // http://yjseo29.github.io/notify
+        toastr.warning(msg);
+    },
+
+    infoMsg: function (msg) {
+        toastr.info(msg);
+    },
+
+    gmtNow: function () {
+        return Date.now() / 1000;
+    }
+
 };
 
 function sendCmd(cmdType, cmdContent, extraData) {
@@ -59,6 +56,8 @@ function sendCmd(cmdType, cmdContent, extraData) {
         cmdContent = '';
     }
 
+    // remove cookie: XDEBUG_SESSION
+    document.cookie = 'XDEBUG_SESSION=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     document.cookie = document.cookie.replace(/XDEBUG_SESSION=[^;]+/, '');
 
     var cmdInfo = {
@@ -66,44 +65,49 @@ function sendCmd(cmdType, cmdContent, extraData) {
         'content': cmdContent,
     };
 
-    showLoading();
+    Utils.showLoading();
     $.post('/cmd_transfer.php', {'cmd_info': JSON.stringify(cmdInfo)}, function (resp) {
-        hideLoading();
+        Utils.hideLoading();
         console.log('sendCmd:', cmdInfo, 'getResponse:', resp);
+
+        if (extraData && extraData.skipCallHandler) {
+            console.log('skip call handler');
+            return;
+        }
 
         var resultHandler = handlerMap[cmdType];
         if (resultHandler) {
             resultHandler(resp, extraData);
         } else {
-            danderMsg('FYI：unkonwn handler——' + cmdType);
+            Utils.danderMsg('FYI：unkonwn handler——' + cmdType);
         }
     });
 }
 
 function handleInitConn(result) {
     if (!result.success) {
-        danderMsg(result.message ? result.message : '建立连接失败！');
+        Utils.danderMsg(result.message ? result.message : '建立连接失败！');
         return;
     }
 
-    infoMsg(result.message);
+    Utils.infoMsg(result.message);
 
     setTimeout( function() {
         $('.J_checkConn').removeClass('hide');
     }, 50);
 
     // 定期查询是否已连接成功
-    timeIntervalMap.checkConnInterval = gmtNow() + maxWaitConnTime;
+    timeIntervalMap.checkConnInterval = Utils.gmtNow() + maxWaitConnTime;
     sendCmd(cmdTypes.typeCheckConn);
 }
 
 function handleCheckConn(result) {
     if (!result.success) {
-        if (gmtNow() > timeIntervalMap.checkConnInterval) {
+        if (Utils.gmtNow() > timeIntervalMap.checkConnInterval) {
             $('.J_checkConn').addClass('hide');
-            danderMsg('连接超时，请重新建立连接');
+            Utils.danderMsg('连接超时，请重新建立连接');
         } else {
-            showLoading();
+            Utils.showLoading();
             setTimeout( function() {
                 sendCmd(cmdTypes.typeCheckConn);
             }, 300);
@@ -111,9 +115,9 @@ function handleCheckConn(result) {
         return;
     }
 
-    infoMsg('连接成功，正在进行初始化设置...');
+    Utils.infoMsg('连接成功，正在进行初始化设置...');
 
-    hideLoading();
+    Utils.hideLoading();
     $('.J_checkConn').addClass('hide');
 
     // Xdebug feature set
@@ -127,13 +131,13 @@ function handleCheckConn(result) {
 
 function handleFeatureSet(result) {
     if (result.success) {
-        infoMsg('初始化参数设置成功！');
+        Utils.infoMsg('初始化参数设置成功！');
     }
 }
 
 function handleAddBreakPoint(result, extraData) {
     if (result.success) {
-        infoMsg('断点注册成功！');
+        Utils.infoMsg('断点注册成功！');
     }
 
     if (extraData && extraData.autoStartRun) {
@@ -142,16 +146,19 @@ function handleAddBreakPoint(result, extraData) {
 }
 
 function handleStepOver(result) {
+    if (result.data && result.data.status === 'stopping') {
+        Utils.danderMsg(result.message);
+        sendCmd(cmdTypes.typeRun, '', {'skipCallHandler': true});
+        return;
+    }
+
     if (result.success) {
         // 需要更新代码
         updateSrcCodeBlock(result);
+        // 同时发出拉取ctx、stack请求
+        sendCmd(cmdTypes.typeFetchCtxStack);
     } else {
-        danderMsg(result.message);
-    }
-
-    if (result.data && result.data.status === 'stopping') {
-        clearTimeout(timeIntervalMap.normalStepFetchCtxStackTimeout);
-        sendCmd(cmdTypes.typeRun);
+        Utils.danderMsg(result.message);
     }
 }
 
@@ -167,13 +174,12 @@ function handleRun(result) {
     handleStepOver(result);
 }
 
-
 function handleRunToLine(result) {
     handleStepOver(result);
 }
 
 function handleStop(result) {
-    infoMsg(result.message);
+    Utils.infoMsg(result.message);
     $('.J_init').attr('disabled', true);
 
     setTimeout( function() {
@@ -188,7 +194,7 @@ function handlePropertyGet(result, node) {
         node.nodes = getNodesInfo(remoteNode.children);
         $('.J_ctxBody').treeview(true).render();
     } else {
-        danderMsg(result.message);
+        Utils.danderMsg(result.message);
     }
 }
 
@@ -197,7 +203,7 @@ function handleFetchCtxStack(result) {
         updateContextBlock(result);
         updateStackBlock(result);
     } else {
-        danderMsg(result.message);
+        Utils.danderMsg(result.message);
     }
 }
 
@@ -321,11 +327,6 @@ function updateStackBlock(result) {
 
 function takeNormalStep(cmdType, content) {
     sendCmd(cmdType, content);
-
-    clearTimeout(timeIntervalMap.normalStepFetchCtxStackTimeout);
-    timeIntervalMap.normalStepFetchCtxStackTimeout = setTimeout( function() {
-        sendCmd(cmdTypes.typeFetchCtxStack);
-    }, window.pageData.autoFetchStackCtxTimeout);
 }
 
 function getNodesInfo(variableList) {
@@ -375,12 +376,12 @@ function reRegisterBreakPoint() {
     }
 
     if (bptList.length < 1) {
-        danderMsg('请先添加断点！');
+        Utils.danderMsg('请先添加断点！');
         return;
     }
 
     sendCmd(cmdTypes.typeAddBreakPoint, bptList);
-    infoMsg('重新注册断点...');
+    Utils.infoMsg('重新注册断点...');
 }
 
 function sprintf(strFmt, args) {
@@ -467,7 +468,7 @@ $( function() {
     $('.J_init').on('click', function() {
         var bptList = getBptList();
         if (bptList.length < 1) {
-            danderMsg('请先添加断点！');
+            Utils.danderMsg('请先添加断点！');
             return;
         }
 
@@ -475,7 +476,7 @@ $( function() {
     });
 
     $('.J_checkConnBtn').on('click', function() {
-        infoMsg('Xdebug连接检测中，请勿操作...');
+        Utils.infoMsg('Xdebug连接检测中，请勿操作...');
         sendCmd(cmdTypes.typeCheckConn);
     });
 
@@ -491,7 +492,7 @@ $( function() {
     $('.J_runToLine').on('click', function() {
         var $selectLine = $('pre code span.onselect');
         if ($selectLine.length < 1) {
-            danderMsg('请先点击代码行，代码将被自动选中');
+            Utils.danderMsg('请先点击代码行，代码将被自动选中');
             return;
         }
 
@@ -525,19 +526,19 @@ $( function() {
         var line = $('.J_addBptPanel input[name=line]').val().trim();
 
         if (!file) {
-            danderMsg('请正确填写文件名');
+            Utils.danderMsg('invalid file name');
             return;
         }
 
         if (isNaN(line)) {
-            danderMsg('请正确填写断点行号');
+            Utils.danderMsg('invalid file line number');
             return;
         }
 
         if (file && file[0] !== '/') {
             var basePath = $('input[name=basePath]').val().trim();
             if (!basePath) {
-                danderMsg('base path未找到，请先填写base path；或者填写文件全路径');
+                Utils.danderMsg('BasePath not found! Either input BasePath first, or file path must be absolute path');
                 return;
             }
             file = basePath + '/' + file;
@@ -553,7 +554,7 @@ $( function() {
 
         var list = breakPointData[file] ? breakPointData[file] : [];
         if (list.indexOf(line) >= 0) {
-            danderMsg('断点已存在，无需重复添加！');
+            Utils.danderMsg('断点已存在，无需重复添加！');
             return;
         }
         list.push(line);

@@ -33,6 +33,7 @@ class CmdTransfer {
         }
 
         $cmd_obj = (object) array(
+            'md5' => md5(time()),
             'type' => $cmd_info->type,
             'content' => $cmd_info->content,
         );
@@ -47,7 +48,11 @@ class CmdTransfer {
         }
         $response = json_decode($response);
 
-        $this->output($response->success, $response->message, isset($response->data) ? $response->data : NULL);
+        if ($this->debug_mode) {
+            file_put_contents('/tmp/tmp-bughole-api-result.txt', json_encode($response));
+        }
+
+        $this->output($response->success, @$response->message, @$response->data);
     }
 
     private function output($success, $msg, $data = NULL) {

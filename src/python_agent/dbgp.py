@@ -14,18 +14,6 @@ import json
 
 """ Response objects for the DBGP module."""
 
-class CommonResult:
-
-    md5 = None
-    success = False
-    message = None
-    data = None
-    apiVer = None
-
-    def toJsonString(self):
-        return json.dumps(self.__dict__)
-
-
 class Response:
     """Contains response data from a command made to the debugger."""
     ns = '{urn:debugger_protocol_v1}'
@@ -275,7 +263,7 @@ class DbgpApi:
         args = args.strip()
         send = cmd.strip()
         self.transID += 1
-        send += ' -i '+ str(self.transID)
+        send += ' -i ' + str(self.transID)
         if len(args) > 0:
             send += ' ' + args
 
@@ -804,6 +792,18 @@ class ResponseError(Exception):
 class TraceError(Exception):
     """Raised when trace is out of domain."""
     pass
+
+class CommonResult:
+
+    md5 = ''
+    success = False
+    message = ''
+    data = None
+    apiVer = None
+
+    def toJsonString(self):
+        return json.dumps(self.__dict__)
+
 
 class Logger:
 

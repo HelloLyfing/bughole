@@ -52,6 +52,7 @@ class TaskHandler:
 
         result = dbgp.CommonResult()
         result.md5 = task.md5
+        result.success = False
 
         if task.type == self.typeInitConn and self.isApiConnected():
             result.success = True
@@ -199,6 +200,9 @@ class TaskHandler:
 
         if result.success and self.dbgpApi.lastStatus == 'break':
             result.data['srccode'] = self.getBreakedSrcCode()
+        elif self.dbgpApi.lastStatus == 'stopping':
+            result.success = False
+            result.message = 'Execution is finished'
         else:
             result.success = False
             result.message = 'fetch Src Code failed. status:' + self.dbgpApi.lastStatus
@@ -221,7 +225,7 @@ class TaskHandler:
         result = self.appendSrcCodeWhenBreaked(result)
         if self.dbgpApi.lastStatus == 'stopping':
             result.success = False
-            result.message = '执行已结束，请检查断点是否有效！status:' + self.dbgpApi.lastStatus
+            result.message = 'Execution is finished'
         return result
 
     def handler_RunToLine(self, task):
@@ -237,7 +241,7 @@ class TaskHandler:
         result = self.appendSrcCodeWhenBreaked(result)
         if self.dbgpApi.lastStatus == 'stopping':
             result.success = False
-            result.message = '执行已结束，请检查断点是否有效！status:' + self.dbgpApi.lastStatus
+            result.message = 'Execution is finished'
         return result
 
     def handler_Stop(self, task):
