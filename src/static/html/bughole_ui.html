@@ -2,8 +2,8 @@
 <head>
     <title>Bughole</title>
 
-    <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css" media="all">
-    <link rel="stylesheet" href="/static/css/toastr.min.css" type="text/css" media="all">
+    <link rel="stylesheet" href="../css/bootstrap.css" type="text/css" media="all">
+    <link rel="stylesheet" href="../css/toastr.min.css" type="text/css" media="all">
     <style type="text/css">
         .lineno {
             margin-right: 10px;
@@ -148,19 +148,16 @@
 </div>
 
 <script type="text/javascript">
-    <?php
-        $page_data = [
-            'autoFetchStackCtxTimeout' => 2500,
-        ];
-    ?>
-    window.pageData = <?php echo json_encode($page_data)?>
+    window.pageData = {
+        "autoFetchStackCtxTimeout": 2500
+    };
 </script>
 
-<script type="text/javascript" src="/static/js/jquery-min-v2.1.1.js"></script>
-<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/static/js/bootstrap-treeview-v1.2.0.js"></script>
-<script type="text/javascript" src="/static/js/toastr.min.js"></script>
-<script type="text/javascript" src="/static/js/bughhole_ui.js"></script>
+<script type="text/javascript" src="../js/jquery-min-v2.1.1.js"></script>
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap-treeview-v1.2.0.js"></script>
+<script type="text/javascript" src="../js/toastr.min.js"></script>
+<script type="text/javascript" src="../js/bughhole_ui.js"></script>
 
 
 

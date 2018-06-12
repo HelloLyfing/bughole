@@ -46,7 +46,7 @@ var Utils = {
     },
 
     gmtNow: function () {
-        return Date.now() / 1000;
+        return parseInt(Date.now() / 1000);
     }
 
 };
@@ -56,30 +56,38 @@ function sendCmd(cmdType, cmdContent, extraData) {
         cmdContent = '';
     }
 
-    // remove cookie: XDEBUG_SESSION
-    document.cookie = 'XDEBUG_SESSION=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    document.cookie = document.cookie.replace(/XDEBUG_SESSION=[^;]+/, '');
-
     var cmdInfo = {
+        'md5': Utils.gmtNow(),
         'type': cmdType,
         'content': cmdContent,
     };
 
     Utils.showLoading();
-    $.post('/cmd_transfer.php', {'cmd_info': JSON.stringify(cmdInfo)}, function (resp) {
-        Utils.hideLoading();
-        console.log('sendCmd:', cmdInfo, 'getResponse:', resp);
+    $.ajax({
+        url: '/bughole/send_cmd',
+        data: JSON.stringify(cmdInfo),
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function(resp) {
+            Utils.hideLoading();
+            console.log('sendCmd:', cmdInfo, 'getResponse:', resp);
 
-        if (extraData && extraData.skipCallHandler) {
-            console.log('skip call handler');
-            return;
-        }
+            if (extraData && extraData.skipCallHandler) {
+                console.log('skip call handler');
+                return;
+            }
 
-        var resultHandler = handlerMap[cmdType];
-        if (resultHandler) {
-            resultHandler(resp, extraData);
-        } else {
-            Utils.danderMsg('FYI：unkonwn handler——' + cmdType);
+            var resultHandler = handlerMap[cmdType];
+            if (resultHandler) {
+                resultHandler(resp, extraData);
+            } else {
+                Utils.danderMsg('FYI：unkonwn handler——' + cmdType);
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            Utils.hideLoading();
+            Utils.danderMsg(errorThrown + ' ! Is the python agent running ?');
         }
     });
 }
