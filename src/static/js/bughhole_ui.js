@@ -163,8 +163,12 @@ function handleStepOver(result) {
     if (result.success) {
         // 需要更新代码
         updateSrcCodeBlock(result);
+
         // 同时发出拉取ctx、stack请求
-        sendCmd(cmdTypes.typeFetchCtxStack);
+        clearTimeout(timeIntervalMap.fetchCtxStackTimeout);
+        timeIntervalMap.fetchCtxStackTimeout = setTimeout(function () {
+            sendCmd(cmdTypes.typeFetchCtxStack);
+        }, window.bughole.autoFetchStackCtxTimeout);
     } else {
         Utils.danderMsg(result.message);
     }
@@ -447,7 +451,7 @@ var cmdTypes = {
 var timeIntervalMap = {
     checkConnDivTimeout: 0,
     checkConnInterval: 0,
-    normalStepFetchCtxStackTimeout: 0,
+    fetchCtxStackTimeout: 0,
 };
 
 var maxWaitConnTime = 85;
