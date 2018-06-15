@@ -62,7 +62,8 @@
 <div style="height: 25px;">
     <img name="loading" class="hide" src="http://wx1.sinaimg.cn/large/6480dca9gy1fqihfepnx8g200o00ot8j.gif">
     <span class="J_checkConn hide">
-        请尽快触发断点处业务！（如果Xdebug拦截成功，待调试的业务将处于hanging状态，不会立即返回结果)
+        Please visit the BreakPoint quickly!
+        (If Xdebug intercepts successfully, the visiting will stay in hanging state)
     </span>
 </div>
 
@@ -99,7 +100,7 @@
             <a href="javascript:;" class="btn btn-xs btn-default J_clearBpt">ClearAll</a>
             <a href="javascript:;" class="btn btn-xs btn-success J_addBpt">AddNew</a>
             | BasePath：
-            <input type="text" name="basePath" placeholder="project root path" value="" style="width: 42%;">
+            <input type="text" name="basePath" placeholder="project root path" value="" style="width: 38%;">
         </div>
     </div>
     <div class="panel-body J_bptBody"></div>
@@ -129,19 +130,19 @@
                 </div>
                 <div class="form-group">
                     <div class="input-group">
-                        <span class="input-group-addon">文件路径：</span>
+                        <span class="input-group-addon">FilePath:</span>
                         <input type="text" class="form-control" name="file">
                     </div>
                     <div class="input-group">
-                        <span class="input-group-addon">断点行号：</span>
+                        <span class="input-group-addon">LineNum:</span>
                         <input type="text" class="form-control" name="line">
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <span name="msg"></span>&nbsp;
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" name="add">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" name="add">OK</button>
             </div>
         </div>
     </div>

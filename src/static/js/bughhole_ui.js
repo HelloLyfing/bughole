@@ -113,7 +113,7 @@ function handleCheckConn(result) {
     if (!result.success) {
         if (Utils.gmtNow() > timeIntervalMap.checkConnInterval) {
             $('.J_checkConn').addClass('hide');
-            Utils.danderMsg('连接超时，请重新建立连接');
+            Utils.danderMsg('conn with xdebug timeout!');
         } else {
             Utils.showLoading();
             setTimeout( function() {
@@ -123,7 +123,7 @@ function handleCheckConn(result) {
         return;
     }
 
-    Utils.infoMsg('连接成功，正在进行初始化设置...');
+    Utils.infoMsg('agent conn with xdebug succeed, going to send init config');
 
     Utils.hideLoading();
     $('.J_checkConn').addClass('hide');
@@ -139,13 +139,13 @@ function handleCheckConn(result) {
 
 function handleFeatureSet(result) {
     if (result.success) {
-        Utils.infoMsg('初始化参数设置成功！');
+        Utils.infoMsg('set init config ok!');
     }
 }
 
 function handleAddBreakPoint(result, extraData) {
     if (result.success) {
-        Utils.infoMsg('断点注册成功！');
+        Utils.infoMsg('BreakPoints are set ok! You can debug now');
     }
 
     if (extraData && extraData.autoStartRun) {
