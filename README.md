@@ -2,7 +2,11 @@
 
 Bughole is a project I develope when I'm working on beibei.com, which mainly focus on enabling PHP debuging even at the pre-production whose internal network cluster exposes nothing but HTTP service at 80 port. 
 
-Bughole accomplishes this by dividing traditional debug client into two parts: 1) the Frontend UI, which can be easily accessed by user end programs like Chrome browser; 2) and the Backend Agent, which lurks in one of the hosts among internal network cluster. The Backend Agent can both communicate with the Frontend UI through HTTP request, and communicate with the Debug Engine (which is Xdebug in this condition) which lies on the same host that Backend Agent exists. So that the Backend Agent can comunicate with the Debug Engine first to retrieve debug data and then send them back to the Frontend UI through HTTP.
+Bughole accomplishes this by dividing traditional debug client into two parts: 1) the Frontend UI, which can be easily accessed by user end programs like Chrome browser; 2) and the Backend Agent, which lurks in one of the hosts among internal network cluster. The Backend Agent can both communicate with the Frontend UI through HTTP request, and with the Debug Engine (which is Xdebug in this condition) which lies on the same host that Backend Agent exists. So that the Backend Agent can comunicate with the Debug Engine first to retrieve debug data and then send them back to the Frontend UI through HTTP.
+
+# Bughole communicating structure
+
+
 
 # Quick start
 First, you can walk through below wiki page to quickly integrate bughole with your existing PHP webapp: https://github.com/HelloLyfing/bughole/wiki/Integrate-bughole-with-you-PHP-website-within-5-minutes .
