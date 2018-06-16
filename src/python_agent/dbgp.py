@@ -257,7 +257,7 @@ class DbgpApi:
         result = CommonResult()
 
         if not self.conn.isconnected():
-            result.message = 'Xdebug连接已断开'
+            result.message = 'conn with Xdebug has broken'
             return result
 
         args = args.strip()

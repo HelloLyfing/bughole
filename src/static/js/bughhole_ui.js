@@ -8,13 +8,11 @@ var Utils = {
     },
 
     setCookie: function (cname, cvalue) {
-        cname = cname;
         cvalue = Utils.base64.encode(cvalue);
         document.cookie = cname + '=' + cvalue + ';';
     },
 
     getCookie: function (cname) {
-        cname = cname;
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
         for (var i = 0; i < ca.length; i++) {
@@ -94,7 +92,7 @@ function sendCmd(cmdType, cmdContent, extraData) {
 
 function handleInitConn(result) {
     if (!result.success) {
-        Utils.danderMsg(result.message ? result.message : '建立连接失败！');
+        Utils.danderMsg(result.message ? result.message : 'conn with agent failed！');
         return;
     }
 
@@ -201,7 +199,7 @@ function handleStop(result) {
 
 function handlePropertyGet(result, node) {
     if (result.success && result.data.length > 0) {
-        // 重新渲染数据
+        // rerender context data
         var remoteNode = result.data[0];
         node.nodes = getNodesInfo(remoteNode.children);
         $('.J_ctxBody').treeview(true).render();
@@ -388,12 +386,11 @@ function reRegisterBreakPoint() {
     }
 
     if (bptList.length < 1) {
-        Utils.danderMsg('请先添加断点！');
+        Utils.danderMsg('Please add breakpoint first !');
         return;
     }
 
     sendCmd(cmdTypes.typeAddBreakPoint, bptList);
-    Utils.infoMsg('重新注册断点...');
 }
 
 function sprintf(strFmt, args) {
@@ -480,16 +477,11 @@ $( function() {
     $('.J_init').on('click', function() {
         var bptList = getBptList();
         if (bptList.length < 1) {
-            Utils.danderMsg('请先添加断点！');
+            Utils.danderMsg('Please add breakpoint first !');
             return;
         }
 
         sendCmd(cmdTypes.typeInitConn);
-    });
-
-    $('.J_checkConnBtn').on('click', function() {
-        Utils.infoMsg('Xdebug连接检测中，请勿操作...');
-        sendCmd(cmdTypes.typeCheckConn);
     });
 
     $('a.J_addBpt').on('click', function() {
@@ -504,7 +496,7 @@ $( function() {
     $('.J_runToLine').on('click', function() {
         var $selectLine = $('pre code span.onselect');
         if ($selectLine.length < 1) {
-            Utils.danderMsg('请先点击代码行，代码将被自动选中');
+            Utils.danderMsg('Please click the line you want to jump to!');
             return;
         }
 
@@ -566,7 +558,7 @@ $( function() {
 
         var list = breakPointData[file] ? breakPointData[file] : [];
         if (list.indexOf(line) >= 0) {
-            Utils.danderMsg('断点已存在，无需重复添加！');
+            Utils.danderMsg('Breakpoint already exists!');
             return;
         }
         list.push(line);
