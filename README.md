@@ -4,8 +4,9 @@ Bughole is a project I develope when I'm working on beibei.com, which mainly foc
 
 Bughole accomplishes this by dividing traditional debug client into two parts: 1) the Frontend UI, which can be easily accessed by user end programs like Chrome browser; 2) and the Backend Agent, which lurks in one of the hosts among internal network cluster. The Backend Agent can both communicate with the Frontend UI through HTTP request, and with the Debug Engine (which is Xdebug in this condition) which lies on the same host that Backend Agent exists. So that the Backend Agent can comunicate with the Debug Engine first to retrieve debug data and then send them back to the Frontend UI through HTTP.
 
-# Bughole communicating structure
 
+# Bughole communicating structure
+![](https://raw.githubusercontent.com/HelloLyfing/bughole/master/doc/imgs/bughole-communicate-structure.png)
 
 
 # Quick start
