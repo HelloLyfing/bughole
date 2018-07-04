@@ -20,3 +20,5 @@ This project relies on below projects to boot development:
  - Frontend UI: jQuery + Bootstrap + Bootstrap-treeview
  - Backend: socket communicating with Xdebug: https://github.com/vim-vdebug/vdebug/tree/master/pythonx/vdebug
  
+## LICENSE
+[MIT](https://github.com/HelloLyfing/bughole/blob/master/LICENSE)
